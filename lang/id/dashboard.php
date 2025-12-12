@@ -33,6 +33,7 @@ return [
     'budget_if_expense' => 'Anggaran (jika pengeluaran)',
     'no_transactions' => 'Tidak ada transaksi ditemukan.',
     'transaction_history' => 'Riwayat Transaksi',
+    'category_name' => 'Nama Kategori',
     
     'profile' => 'Profil',
     'profile_info' => 'Informasi Profil',
@@ -63,4 +64,6 @@ return [
     'expense' => 'Pengeluaran',
     'type_col' => 'Tipe',
     'select_category' => 'Pilih Kategori',
+    // ADDED
+    'add_category' => 'Tambah Kategori Baru',
 ];

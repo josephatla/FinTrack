@@ -123,6 +123,19 @@
                         <select name="category_id" class="form-select" id="categoryOptions">
                             <option value="">{{ __('dashboard.select_category') }}</option>
                         </select>
+                        
+                        {{-- GATING CATEGORY CREATION (Premium Feature) --}}
+                        <div class="mt-2 text-end">
+                            @if (Auth::user()->isPremium())
+                                <a href="{{ route('categories.create') }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-plus me-1"></i> {{ __('dashboard.add_category') ?? 'Add New Category' }}
+                                </a>
+                            @else
+                                <small class="text-muted">
+                                    {{ __('messages.premium_category_cta_short') ?? 'Upgrade to Premium to create new categories.' }}
+                                </small>
+                            @endif
+                        </div>
                     </div>
 
                     {{-- BUDGET SELECT in Transaction Form --}}

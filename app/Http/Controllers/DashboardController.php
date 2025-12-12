@@ -14,6 +14,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // RESTORE DRAFT: If we have a draft from the transaction controller, flash it to 'old' inputs
+        if (session()->has('transaction_draft')) {
+            session()->flash('_old_input', session('transaction_draft'));
+            // Optional: Keep it until successfully submitted? If so, don't forget() here.
+            // If you want it one-time only: session()->forget('transaction_draft'); 
+        }
+
         $user = Auth::user();
 
         $totalIncome = Income::where('user_id', $user->id)->sum('amount');

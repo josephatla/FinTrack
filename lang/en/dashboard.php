@@ -34,6 +34,9 @@ return [
     'budget_if_expense' => 'Budget (if expense)',
     'no_transactions' => 'No transactions found.',
     'transaction_history' => 'Transaction History',
+    // ADDED: Localization key for the category creation button
+    'add_category' => 'Add New Category',
+    'category_name' => 'Category Details',
 
     // Profile Page
     'profile' => 'Profile',

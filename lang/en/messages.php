@@ -9,6 +9,9 @@ return [
     'premium_budget_check_list' => 'Upgrade to Premium to create and track spending against budgets.',
     'premium_budget_tracker_note' => 'Budget tracking is a Premium feature.',
     
+    // ADDED: Message for category creation feature gating
+    'premium_category_cta_short' => 'Upgrade to Premium to create new categories.',
+    
     'upgrade_now' => 'Upgrade Now',
     'transaction_added_success' => 'Transaction added successfully!',
 ];
