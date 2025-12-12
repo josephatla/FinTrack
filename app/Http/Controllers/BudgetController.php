@@ -20,7 +20,6 @@ class BudgetController extends Controller
             return redirect()->route('dashboard')
                 ->with('error', __('messages.premium_required_budgets'));
         }
-
         return view('budgets.create');
     }
 
@@ -30,18 +29,21 @@ class BudgetController extends Controller
             abort(403, __('messages.premium_required_budgets'));
         }
 
+        // Validate using NEW field names
         $request->validate([
-            'name'   => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0',
+            'budget_name'   => 'required|string|max:255',
+            'budget_amount' => 'required|numeric|min:0',
         ]);
 
         Budget::create([
             'user_id' => Auth::id(),
-            'name'    => $request->name,
-            'amount'  => $request->amount,
+            'name'    => $request->budget_name,   // Map from new name
+            'amount'  => $request->budget_amount, // Map from new name
         ]);
 
-        // UPDATED: Redirect to 'dashboard' so the Transaction Form can restore the draft
+        // Clear the specific budget draft
+        session()->forget('budget_draft');
+
         return redirect()->route('dashboard')->with('success', __('budget.created_success'));
     }
 
@@ -50,7 +52,6 @@ class BudgetController extends Controller
         $budget = Budget::where('user_id', Auth::id())
                         ->with('expenses')
                         ->findOrFail($budget_id);
-
         return view('budgets.show', compact('budget'));
     }
 
@@ -59,7 +60,6 @@ class BudgetController extends Controller
         if ($budget->user_id !== Auth::id()) {
             abort(403);
         }
-
         $budget->delete();
         return redirect()->route('budgets.index')->with('success', __('budget.deleted_success'));
     }

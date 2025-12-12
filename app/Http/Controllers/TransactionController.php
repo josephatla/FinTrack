@@ -13,9 +13,9 @@ use App\Models\User;
 
 class TransactionController extends Controller
 {
-    // ... index method remains the same ...
     public function index(Request $request)
     {
+        // ... (Index code remains exactly the same as your original file) ...
         $user = Auth::user();
         $userId = $user->id;
 
@@ -57,23 +57,19 @@ class TransactionController extends Controller
             $incomeQuery->whereYear('incomes.transaction_date', $year);
             $expenseQuery->whereYear('expenses.transaction_date', $year);
         }
-        
         if ($month) {
             $incomeQuery->whereMonth('incomes.transaction_date', $month);
             $expenseQuery->whereMonth('expenses.transaction_date', $month);
         }
-
         if ($search) {
             $searchTerm = '%' . $search . '%';
             $incomeQuery->where('incomes.name', 'LIKE', $searchTerm);
             $expenseQuery->where('expenses.name', 'LIKE', $searchTerm);
         }
-
         if ($category) {
             $incomeQuery->where('incomes.category_id', $category);
             $expenseQuery->where('expenses.category_id', $category);
         }
-        
         if ($account) {
             $incomeQuery->where('incomes.account_id', $account);
             $expenseQuery->where('expenses.account_id', $account);
@@ -92,25 +88,19 @@ class TransactionController extends Controller
             ->orderBy('transaction_date', 'desc')
             ->paginate(10);
 
-        return view('transactions.index', compact(
-            'transactions', 
-            'categories',
-            'accounts' 
-        ));
+        return view('transactions.index', compact('transactions', 'categories', 'accounts'));
     }
 
     public function store(Request $request)
     {
-        // NO INTERCEPT NEEDED: SessionController handles the draft logic via 'formaction'
-
         $user = Auth::user();
 
-        // 1. Validation
+        // 1. Validation with NEW field names
         $request->validate([
             'type'              => 'required|in:income,expense',
-            'amount'            => 'required|numeric|min:0',
+            'transaction_amount'=> 'required|numeric|min:0', // renamed
             'transaction_date'  => 'required|date',
-            'name'              => 'required|string|max:255',
+            'transaction_name'  => 'required|string|max:255', // renamed
             'account_id'        => 'required|exists:accounts,account_id',
             'category_id'       => 'nullable|exists:categories,category_id', 
         ]);
@@ -129,14 +119,14 @@ class TransactionController extends Controller
             $budgetId = null;
         }
 
-        // 3. Creation
+        // 3. Creation (Mapping new names to DB columns)
         if ($request->type === 'income') {
             Income::create([
                 'user_id' => $userId,
                 'account_id' => $request->account_id,
                 'category_id' => $request->category_id,
-                'name' => $request->name,
-                'amount' => $request->amount,
+                'name' => $request->transaction_name,     // Map input -> DB
+                'amount' => $request->transaction_amount, // Map input -> DB
                 'transaction_date' => $request->transaction_date,
             ]);
         } else {
@@ -145,13 +135,13 @@ class TransactionController extends Controller
                 'account_id' => $request->account_id,
                 'category_id' => $request->category_id,
                 'budget_id' => $budgetId,
-                'name' => $request->name,
-                'amount' => $request->amount,
+                'name' => $request->transaction_name,     // Map input -> DB
+                'amount' => $request->transaction_amount, // Map input -> DB
                 'transaction_date' => $request->transaction_date,
             ]);
         }
 
-        // 4. CLEANUP: Clear draft on success (in case one existed)
+        // 4. CLEANUP: Clear transaction draft
         session()->forget('transaction_draft');
 
         return redirect()->back()->with('success', __('messages.transaction_added_success'));

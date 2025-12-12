@@ -8,7 +8,7 @@ use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UpgradeController;
-use App\Http\Controllers\SessionController; // ADDED: Import SessionController
+use App\Http\Controllers\SessionController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -22,7 +22,6 @@ Route::get('/lang/{locale}', function ($locale) {
     return redirect()->back();
 })->name('lang.switch');
 
-
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -31,15 +30,11 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // ... inside the middleware group ...
-
-    // Route for saving transaction draft when adding a Category
+    // --- Session & Draft Routes ---
     Route::post('/session/draft', [SessionController::class, 'storeDraft'])->name('session.draft');
-
-    // NEW: Route for saving transaction draft when adding a Budget
     Route::post('/session/draft/budget', [SessionController::class, 'storeBudgetDraft'])->name('session.draft_budget');
-
-    // ... rest of your routes ...
+    // NEW: Auto-save route
+    Route::post('/session/autosave', [SessionController::class, 'autosave'])->name('session.autosave');
 
     Route::resource('accounts', AccountController::class);
     Route::resource('categories', CategoryController::class);
@@ -55,9 +50,6 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('budgets', BudgetController::class);
     });
 
-    // Note: This overrides the previous resource definition for 'accounts' index/show
-    // It's usually better to define this before the resource or exclude them above, 
-    // but we will leave it as is to avoid breaking existing logic.
     Route::get('/accounts/{account}/transactions', [AccountController::class, 'showTransactions'])
         ->name('accounts.transactions');
 });

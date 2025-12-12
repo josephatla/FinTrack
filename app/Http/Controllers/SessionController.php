@@ -6,20 +6,33 @@ use Illuminate\Http\Request;
 
 class SessionController extends Controller
 {
-    // Existing method for Categories
+    // Redirects to Category creation (preserving transaction draft)
     public function storeDraft(Request $request)
     {
         session(['transaction_draft' => $request->except(['_token'])]);
         return redirect()->route('categories.create');
     }
 
-    // NEW: Method for Budgets
+    // Redirects to Budget creation (preserving transaction draft)
     public function storeBudgetDraft(Request $request)
     {
-        // Save the transaction inputs to the same session key
         session(['transaction_draft' => $request->except(['_token'])]);
-        
-        // Redirect to the budget creation page
         return redirect()->route('budgets.create');
+    }
+
+    // NEW: Handles AJAX auto-saving
+    public function autosave(Request $request)
+    {
+        $data = $request->input('data', []);
+        $form = $request->input('form');
+
+        // Store data in separate keys to avoid collision
+        if ($form === 'transaction') {
+            session(['transaction_draft' => $data]);
+        } elseif ($form === 'budget') {
+            session(['budget_draft' => $data]);
+        }
+
+        return response()->json(['status' => 'success']);
     }
 }

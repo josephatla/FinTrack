@@ -56,13 +56,16 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white fw-bold">{{ __('dashboard.add_budget') }}</div>
                 <div class="card-body">
-                    <form action="{{ route('budgets.store') }}" method="POST" class="row g-3">
+                    {{-- Added ID="budgetForm" --}}
+                    <form action="{{ route('budgets.store') }}" method="POST" class="row g-3" id="budgetForm">
                         @csrf
                         <div class="col-12">
-                            <input type="text" class="form-control" name="name" placeholder="{{ __('dashboard.budget_name') }}" required value="{{ old('name') }}">
+                            {{-- Renamed to budget_name --}}
+                            <input type="text" class="form-control" name="budget_name" placeholder="{{ __('dashboard.budget_name') }}" required value="{{ old('budget_name') }}">
                         </div>
                         <div class="col-12">
-                            <input type="number" class="form-control" name="amount" placeholder="{{ __('dashboard.amount') }}" required value="{{ old('amount') }}">
+                            {{-- Renamed to budget_amount --}}
+                            <input type="number" class="form-control" name="budget_amount" placeholder="{{ __('dashboard.amount') }}" required value="{{ old('budget_amount') }}">
                         </div>
                         <div class="col-12 text-end">
                             <button type="submit" class="btn btn-primary">{{ __('dashboard.add_budget_btn') }}</button>
@@ -90,7 +93,8 @@
         <div class="card shadow-lg">
             <div class="card-header bg-success text-white fw-bold">{{ __('dashboard.add_transaction') }}</div>
             <div class="card-body">
-                <form action="{{ route('transactions.store') }}" method="POST" class="row g-3">
+                {{-- Added ID="transactionForm" --}}
+                <form action="{{ route('transactions.store') }}" method="POST" class="row g-3" id="transactionForm">
                     @csrf
 
                     <div class="col-12">
@@ -115,13 +119,8 @@
                             <option value="">{{ __('dashboard.select_category') }}</option>
                         </select>
                         
-                        {{-- GATING CATEGORY CREATION (Premium Feature) --}}
                         <div class="mt-2 text-end">
                             @if (Auth::user()->isPremium())
-                                {{-- 
-                                    UPDATED: Use `formaction` to submit to SessionController.
-                                    `formnovalidate` prevents HTML5 validation (like "required") from blocking the redirect.
-                                --}}
                                 <button type="submit" 
                                         formaction="{{ route('session.draft') }}" 
                                         formnovalidate 
@@ -146,7 +145,6 @@
                                 @endforeach
                             </select>
                             
-                            {{-- NEW: Add Budget Button (Saves Draft & Redirects) --}}
                             <div class="mt-2 text-end">
                                 <button type="submit" 
                                         formaction="{{ route('session.draft_budget') }}" 
@@ -164,11 +162,13 @@
                     </div>
 
                     <div class="col-12">
-                        <input type="text" class="form-control" name="name" placeholder="{{ __('dashboard.transaction_name') }}" required value="{{ old('name') }}">
+                        {{-- Renamed to transaction_name --}}
+                        <input type="text" class="form-control" name="transaction_name" placeholder="{{ __('dashboard.transaction_name') }}" required value="{{ old('transaction_name') }}">
                     </div>
 
                     <div class="col-6">
-                        <input type="number" class="form-control" name="amount" placeholder="{{ __('dashboard.amount') }}" required value="{{ old('amount') }}">
+                        {{-- Renamed to transaction_amount --}}
+                        <input type="number" class="form-control" name="transaction_amount" placeholder="{{ __('dashboard.amount') }}" required value="{{ old('transaction_amount') }}">
                     </div>
                     <div class="col-6">
                         <input type="date" class="form-control" name="transaction_date" required value="{{ old('transaction_date') }}">
@@ -183,11 +183,6 @@
     </div>
 </div>
 
-{{-- 
-    Rest of the file (Budgets List, Transactions Table, JavaScript) 
-    remains exactly the same as the previous correct version.
-    I am omitting it here for brevity, but make sure to keep the JS script block!
---}}
 <h4 class="mt-4 mb-3 fw-bold">{{ __('dashboard.your_budgets') }}</h4>
 <div class="row mb-5">
     @if (Auth::user()->isPremium() && count($budgets) > 0)
@@ -292,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const oldBudget = "{{ old('budget_id') }}";
 
     function updateForm(type, selectedCategoryId = null) {
-        budgetSelect.style.display = type === 'expense' ? 'block' : 'none';
+        if(budgetSelect) budgetSelect.style.display = type === 'expense' ? 'block' : 'none';
         categorySelect.style.display = type ? 'block' : 'none';
 
         categoryOptions.innerHTML = '<option value="">{{ __('dashboard.select_category') }}</option>';
@@ -321,6 +316,43 @@ document.addEventListener('DOMContentLoaded', function () {
             if (budgetOption) budgetOption.selected = true;
         }
     }
+
+    // --- NEW: AUTO-SAVE LOGIC ---
+    // Make sure you have a CSRF token in your layout (usually in a meta tag) or get it from a hidden input
+    // Here we try to grab it from one of the forms
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+    
+    function autoSave(formId, formType) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+
+        form.addEventListener('input', debounce(function() {
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => { data[key] = value });
+
+            fetch('{{ route("session.autosave") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ form: formType, data: data })
+            });
+        }, 1000)); // 1 second delay
+    }
+
+    function debounce(func, timeout = 1000){
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+
+    // Initialize auto-save for both forms
+    autoSave('budgetForm', 'budget');
+    autoSave('transactionForm', 'transaction');
 });
 </script>
 
