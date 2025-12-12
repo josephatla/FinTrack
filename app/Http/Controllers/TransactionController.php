@@ -13,7 +13,7 @@ use App\Models\User;
 
 class TransactionController extends Controller
 {
-    // ... index method remains exactly as you had it ...
+    // ... index method remains the same ...
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -101,18 +101,11 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        // 1. INTERCEPT: Check if user clicked "Add New Category"
-        if ($request->has('redirect_to_category')) {
-            // Save the current form inputs to the session
-            session(['transaction_draft' => $request->except(['_token', 'redirect_to_category'])]);
-            
-            // Redirect to the create category page
-            return redirect()->route('categories.create');
-        }
+        // NO INTERCEPT NEEDED: SessionController handles the draft logic via 'formaction'
 
         $user = Auth::user();
 
-        // 2. Validation
+        // 1. Validation
         $request->validate([
             'type'              => 'required|in:income,expense',
             'amount'            => 'required|numeric|min:0',
@@ -124,7 +117,7 @@ class TransactionController extends Controller
 
         $userId = Auth::id();
 
-        // 3. Budget Gating
+        // 2. Budget Gating
         $budgetId = $request->budget_id;
         if ($request->type === 'expense') {
             if ($user->isPremium()) {
@@ -136,7 +129,7 @@ class TransactionController extends Controller
             $budgetId = null;
         }
 
-        // 4. Creation
+        // 3. Creation
         if ($request->type === 'income') {
             Income::create([
                 'user_id' => $userId,
@@ -158,7 +151,7 @@ class TransactionController extends Controller
             ]);
         }
 
-        // 5. Cleanup: Remove draft if success
+        // 4. CLEANUP: Clear draft on success (in case one existed)
         session()->forget('transaction_draft');
 
         return redirect()->back()->with('success', __('messages.transaction_added_success'));

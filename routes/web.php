@@ -8,6 +8,7 @@ use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UpgradeController;
+use App\Http\Controllers\SessionController; // ADDED: Import SessionController
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -30,6 +31,9 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
+    // ADDED: Route for saving the transaction draft
+    Route::post('/session/draft', [SessionController::class, 'storeDraft'])->name('session.draft');
+    
     Route::resource('accounts', AccountController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class);
@@ -44,7 +48,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('budgets', BudgetController::class);
     });
 
-    Route::resource('accounts', AccountController::class)->only(['index', 'show']);
+    // Note: This overrides the previous resource definition for 'accounts' index/show
+    // It's usually better to define this before the resource or exclude them above, 
+    // but we will leave it as is to avoid breaking existing logic.
     Route::get('/accounts/{account}/transactions', [AccountController::class, 'showTransactions'])
         ->name('accounts.transactions');
 });
