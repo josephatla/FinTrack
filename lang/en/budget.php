@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'budget' => 'Budget',
+    'budgets' => 'Budgets',
+    'new_budget' => 'New Budget',
+    'edit_budget' => 'Edit Budget',
+    'view_budget' => 'View Budget',
+    'summary' => 'Budget Summary',
+    'in_budget' => 'In Budget',
+
+    'name' => 'Name',
+    'limit' => 'Limit Amount',
+    'amount' => 'Amount',
+    'add_budget_btn' => 'Create Budget',
+    'save_changes' => 'Save Changes',
+    'used' => 'Used',
+    'remaining' => 'Remaining',
+    'over_budget' => 'Over Budget',
+    'transactions' => 'Transactions',
+    'no_budgets' => 'No budgets found.',
+    'no_budget_transactions' => 'No transactions recorded for this budget.',
+    'status' => 'Status',
+    'details' => 'Details',
+    'back' => 'Back',
+    'delete' => 'Delete Budget',
+    
+    'delete_confirm' => 'Are you sure you want to delete this budget?',
+    'created_success' => 'Budget created successfully!',
+    'updated_success' => 'Budget updated successfully!',
+    'deleted_success' => 'Budget deleted successfully!',
+];
