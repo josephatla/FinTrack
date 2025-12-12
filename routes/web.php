@@ -31,9 +31,16 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // ADDED: Route for saving the transaction draft
+    // ... inside the middleware group ...
+
+    // Route for saving transaction draft when adding a Category
     Route::post('/session/draft', [SessionController::class, 'storeDraft'])->name('session.draft');
-    
+
+    // NEW: Route for saving transaction draft when adding a Budget
+    Route::post('/session/draft/budget', [SessionController::class, 'storeBudgetDraft'])->name('session.draft_budget');
+
+    // ... rest of your routes ...
+
     Route::resource('accounts', AccountController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class);

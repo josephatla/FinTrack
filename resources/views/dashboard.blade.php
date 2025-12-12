@@ -145,6 +145,16 @@
                                     <option value="{{ $budget->budget_id }}" {{ old('budget_id') == $budget->budget_id ? 'selected' : '' }}>{{ $budget->name }}</option>
                                 @endforeach
                             </select>
+                            
+                            {{-- NEW: Add Budget Button (Saves Draft & Redirects) --}}
+                            <div class="mt-2 text-end">
+                                <button type="submit" 
+                                        formaction="{{ route('session.draft_budget') }}" 
+                                        formnovalidate 
+                                        class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-plus me-1"></i> {{ __('dashboard.add_budget') ?? 'Add New Budget' }}
+                                </button>
+                            </div>
                         @else
                             <input type="hidden" name="budget_id" value=""> 
                             <div class="alert alert-info py-2 m-0" role="alert">
