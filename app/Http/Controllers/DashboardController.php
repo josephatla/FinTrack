@@ -14,8 +14,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. RESTORE DRAFTS
-        // We merge both drafts so both forms can be populated simultaneously
         $oldInput = [];
         if (session()->has('transaction_draft')) {
             $oldInput = array_merge($oldInput, session('transaction_draft'));
@@ -23,8 +21,6 @@ class DashboardController extends Controller
         if (session()->has('budget_draft')) {
             $oldInput = array_merge($oldInput, session('budget_draft'));
         }
-
-        // Flash to Laravel's internal "old input" session key
         if (!empty($oldInput)) {
             session()->flash('_old_input', $oldInput);
         }

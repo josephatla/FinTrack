@@ -8,7 +8,6 @@ return [
     'view_budget' => 'View Budget',
     'summary' => 'Budget Summary',
     'in_budget' => 'In Budget',
-
     'name' => 'Name',
     'limit' => 'Limit Amount',
     'amount' => 'Amount',
@@ -24,7 +23,6 @@ return [
     'details' => 'Details',
     'back' => 'Back',
     'delete' => 'Delete Budget',
-    
     'delete_confirm' => 'Are you sure you want to delete this budget?',
     'created_success' => 'Budget created successfully!',
     'updated_success' => 'Budget updated successfully!',

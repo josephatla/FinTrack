@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
-{{-- Check for Premium Status (Security UX - although this page is already middleware protected) --}}
 @if (!Auth::user()->isPremium())
     <div class="alert alert-danger" role="alert">
         {{ __('messages.premium_required_budgets') }}
@@ -25,8 +23,6 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white fw-bold">{{ __('budget.summary') }}</div>
         <div class="card-body">
-            
-            {{-- Progress Bar for Quick Status Check --}}
             <h5 class="fw-bold mb-3">
                 {{ __('budget.status') }}: 
                 <span class="text-{{ $isOverBudget ? 'danger' : 'success' }}">
@@ -43,10 +39,7 @@
                 </div>
             </div>
 
-            {{-- Budget Summary Cards --}}
             <div class="row g-3">
-                
-                {{-- Limit --}}
                 <div class="col-md-4">
                     <div class="card border-primary h-100">
                         <div class="card-body py-2">
@@ -56,7 +49,6 @@
                     </div>
                 </div>
 
-                {{-- Used --}}
                 <div class="col-md-4">
                     <div class="card border-warning h-100">
                         <div class="card-body py-2">
@@ -66,7 +58,6 @@
                     </div>
                 </div>
 
-                {{-- Remaining / Status --}}
                 <div class="col-md-4">
                     <div class="card h-100 border-{{ $isOverBudget ? 'danger' : 'success' }}">
                         <div class="card-body py-2">

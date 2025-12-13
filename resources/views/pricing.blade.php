@@ -8,10 +8,8 @@
         <p class="lead text-muted">{{ __('pricing.subtitle') }}</p>
     </div>
 
-    {{-- Pricing Tiers Row --}}
     <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
 
-        {{-- 1. FREE TIER (The Standard) --}}
         <div class="col">
             <div class="card h-100 shadow-sm border-secondary">
                 <div class="card-header text-center py-3 bg-light">
@@ -60,7 +58,6 @@
                             {{ __('pricing.button_active') }}
                         </button>
                     @else
-                        {{-- Instant Upgrade Form for Testing (Replaces the anchor link) --}}
                         <form action="{{ route('upgrade.instant') }}" method="POST" class="w-100 mt-auto">
                             @csrf
                             <button type="submit" class="w-100 btn btn-lg btn-primary">
@@ -82,9 +79,3 @@
 </div>
 
 @endsection
-
-@push('scripts')
-<script>
-    // Include Font Awesome CSS or CDN link in your main layout for icons (fas fa-check-circle, etc.)
-</script>
-@endpush

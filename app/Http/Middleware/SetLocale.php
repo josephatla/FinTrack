@@ -17,8 +17,6 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        // We use the helper 'session()' instead of the Facade 'Session::'
-        // to avoid import errors.
         if (session()->has('locale')) {
             App::setLocale(session()->get('locale'));
         }

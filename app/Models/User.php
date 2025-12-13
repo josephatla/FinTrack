@@ -9,7 +9,6 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -49,16 +48,10 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Helper to check if user is allowed to access Premium features
-     */
     public function isPremium(): bool
     {
         return $this->account_type === 'PREMIUM';
     }
-
-    // --- Relationships ---
-
     public function accounts()
     {
         return $this->hasMany(Account::class);

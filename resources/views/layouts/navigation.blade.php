@@ -11,7 +11,6 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto align-items-center">
         
-        {{-- DASHBOARD LINK --}}
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('dashboard') ? 'active fw-bold text-primary' : '' }}" 
              href="{{ route('dashboard') }}">
@@ -19,7 +18,6 @@
           </a>
         </li>
         
-        {{-- HISTORY LINK --}}
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('transactions.index') ? 'active fw-bold text-primary' : '' }}" 
              href="{{ route('transactions.index') }}">
@@ -27,7 +25,6 @@
           </a>
         </li>
         
-        {{-- LANGUAGE DROPDOWN --}}
         <li class="nav-item dropdown me-2">
           <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-globe me-1"></i> {{ strtoupper(app()->getLocale()) }}
@@ -38,14 +35,12 @@
           </ul>
         </li>
         
-        {{-- USER DROPDOWN --}}
         <li class="nav-item dropdown me-2">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
             
-            {{-- Wallet/Accounts Link --}}
             <li>
               <a class="dropdown-item" href="{{ route('accounts.index') }}">
                 <i class="fas fa-wallet me-2"></i> {{ __('dashboard.wallets') }} 
@@ -71,7 +66,6 @@
           </ul>
         </li>
         
-        {{-- PREMIUM UPGRADE BUTTON --}}
         @if (!Auth::user()->isPremium())
             <li class="nav-item">
                 <a class="btn btn-primary btn-sm fw-bold px-3" 

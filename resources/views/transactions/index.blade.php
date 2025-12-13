@@ -4,13 +4,10 @@
 
 <h2 class="mb-4 fw-bold fs-2">{{ __('dashboard.transaction_history') }}</h2>
 
-{{-- FILTERING FORM (Wrapped in a Card for Better UI) --}}
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-light fw-bold">{{ __('transactions.filter_transactions') }}</div>
     <div class="card-body">
         <form method="GET" action="{{ url()->current() }}" class="row g-3 align-items-end">
-            
-            {{-- SEARCH BAR INPUT --}}
             <div class="col-md-6 col-lg-2">
                 <label for="search" class="form-label text-muted small">{{ __('transactions.search_name') }}</label>
                 <input type="text" name="search" id="search" class="form-control" 
@@ -18,7 +15,6 @@
                        value="{{ request('search') }}">
             </div>
             
-            {{-- NEW: WALLET FILTER DROPDOWN --}}
             <div class="col-md-6 col-lg-2">
                 <label for="account" class="form-label text-muted small">{{ __('dashboard.wallets') }}</label>
                 <select name="account" id="account" class="form-select">
@@ -33,7 +29,6 @@
                 </select>
             </div>
 
-            {{-- TYPE FILTER DROPDOWN --}}
             <div class="col-md-6 col-lg-2">
                 <label for="type" class="form-label text-muted small">{{ __('dashboard.type_col') }}</label>
                 <select name="type" id="type" class="form-select">
@@ -43,14 +38,12 @@
                 </select>
             </div>
             
-            {{-- CATEGORY FILTER DROPDOWN --}}
             <div class="col-md-6 col-lg-2">
                 <label for="category" class="form-label text-muted small">{{ __('dashboard.select_category') }}</label>
                 <select name="category" id="category" class="form-select">
                     <option value="">{{ __('transactions.all_categories') }}</option>
                     
                     @php 
-                        // Ensure $categories is a collection before grouping
                         $groupedCategories = isset($categories) ? $categories->groupBy('type') : collect(); 
                     @endphp
 
@@ -78,7 +71,6 @@
                 </select>
             </div>
 
-            {{-- Month Filter Dropdown --}}
             <div class="col-md-6 col-lg-2">
                 <label for="month" class="form-label text-muted small">{{ __('transactions.filter_month') }}</label>
                 <select name="month" id="month" class="form-select">
@@ -91,7 +83,6 @@
                 </select>
             </div>
 
-            {{-- Year Filter Dropdown --}}
             <div class="col-md-6 col-lg-2">
                 <label for="year" class="form-label text-muted small">{{ __('transactions.filter_year') }}</label>
                 <select name="year" id="year" class="form-select">
@@ -105,15 +96,12 @@
                 </select>
             </div>
 
-            {{-- Buttons (Combined space) --}}
             <div class="col-12 d-flex gap-2 pt-2">
                 
-                {{-- Apply Filter Button --}}
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-filter me-1"></i> {{ __('transactions.apply_filter') }}
                 </button>
                 
-                {{-- Reset Filter Button --}}
                 @if (request()->has('month') || request()->has('year') || request()->has('category') || request()->has('search') || request()->has('type') || request()->has('account'))
                     <a href="{{ route('transactions.index') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-undo me-1"></i> {{ __('transactions.reset_filter') }}
@@ -124,7 +112,6 @@
     </div>
 </div>
 
-{{-- TRANSACTION TABLE --}}
 <div class="table-responsive">
     <table class="table table-hover table-bordered shadow-sm">
         <thead class="table-dark">
@@ -134,7 +121,6 @@
                 <th>{{ __('dashboard.type_col') }}</th>
                 <th class="text-end">{{ __('dashboard.amount_col') }}</th>
                 
-                {{-- PREMIUM GATE: Only show Budget column header for Premium users --}}
                 @if (Auth::user()->isPremium())
                     <th>{{ __('dashboard.budget_if_expense') }}</th>
                 @endif
@@ -151,16 +137,13 @@
                             {{ __('dashboard.' . $t->type) }}
                         </span>
                     </td>
-                    {{-- Color code amount and align right --}}
                     <td class="text-end fw-bold text-{{ $t->type === 'income' ? 'success' : 'danger' }}">
                         Rp {{ number_format($t->amount) }}
                     </td>
                     
-                    {{-- PREMIUM GATE: Only show Budget column data for Premium users --}}
                     @if (Auth::user()->isPremium())
                         <td>
                             @if($t->type === 'expense')
-                                {{-- Use the budget_name field retrieved from the Controller's LEFT JOIN --}}
                                 {{ $t->budget_name ? $t->budget_name . ' ' . __('budget.budget') : '-' }}
                             @else
                                 -
@@ -170,7 +153,6 @@
                 </tr>
             @empty
                 <tr>
-                    {{-- Adjust colspan based on whether the budget column is visible (4 or 5 columns) --}}
                     <td colspan="{{ Auth::user()->isPremium() ? 5 : 4 }}" class="text-center py-3 text-muted">
                         {{ __('transactions.no_transactions') }}
                     </td>

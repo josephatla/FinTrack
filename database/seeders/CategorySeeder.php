@@ -15,7 +15,6 @@ class CategorySeeder extends Seeder
 
 
         $defaultCategories = [
-            // --- EXPENSE CATEGORIES ---
             'expense' => [
                 'Food',
                 'Transport',
@@ -29,7 +28,6 @@ class CategorySeeder extends Seeder
                 'Donations',
             ],
 
-            // --- INCOME CATEGORIES ---
             'income' => [
                 'Salary',
                 'Bonus',
@@ -44,10 +42,9 @@ class CategorySeeder extends Seeder
         foreach ($defaultCategories as $type => $categories) {
             foreach ($categories as $categoryName) {
                 DB::table('categories')->insert([
-                    // Setting user_id to null makes this a system-wide default category
                     'user_id' => null, 
                     'name' => $categoryName,
-                    'type' => $type, // 'expense' or 'income'
+                    'type' => $type, 
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

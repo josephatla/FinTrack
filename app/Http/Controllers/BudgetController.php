@@ -29,7 +29,6 @@ class BudgetController extends Controller
             abort(403, __('messages.premium_required_budgets'));
         }
 
-        // Validate using NEW field names
         $request->validate([
             'budget_name'   => 'required|string|max:255',
             'budget_amount' => 'required|numeric|min:0',
@@ -37,11 +36,10 @@ class BudgetController extends Controller
 
         Budget::create([
             'user_id' => Auth::id(),
-            'name'    => $request->budget_name,   // Map from new name
-            'amount'  => $request->budget_amount, // Map from new name
+            'name'    => $request->budget_name,  
+            'amount'  => $request->budget_amount, 
         ]);
 
-        // Clear the specific budget draft
         session()->forget('budget_draft');
 
         return redirect()->route('dashboard')->with('success', __('budget.created_success'));

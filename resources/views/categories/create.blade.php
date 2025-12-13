@@ -3,12 +3,9 @@
 @section('content')
 <div class="container">
     <div class="row">
-        {{-- Center the form on medium and larger screens --}}
         <div class="col-md-8 offset-md-2">
             
-            <h2 class="mb-4 fw-bold fs-2">{{ __('dashboard.add_category') ?? 'Create New Category' }}</h2>
-
-            {{-- Flash Messages --}}
+            <h2 class="mb-4 fw-bold fs-2">{{ __('dashboard.add_category') }}</h2>
             @if(session('error'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{ session('error') }}
@@ -24,13 +21,11 @@
 
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white fw-bold">
-                    {{ __('dashboard.category_name') ?? 'Category Details' }}
+                    {{ __('dashboard.category_name') }}
                 </div>
                 <div class="card-body">
                     <form action="{{ route('categories.store') }}" method="POST">
                         @csrf
-                        
-                        {{-- Category Name Input --}}
                         <div class="mb-3">
                             <label for="name" class="form-label">{{ __('dashboard.name') }}</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="e.g., Food, Salary, Investment" required>
@@ -39,7 +34,6 @@
                             @enderror
                         </div>
 
-                        {{-- Category Type Dropdown --}}
                         <div class="mb-4">
                             <label for="type" class="form-label">{{ __('dashboard.type_col') }}</label>
                             <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
@@ -53,7 +47,6 @@
                         </div>
                         
                         <div class="d-flex justify-content-between">
-                            {{-- Assuming categories.index exists or falls back to a list view --}}
                             <a href="{{ route('dashboard') }}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left me-1"></i> {{ __('dashboard.cancel') }}
                             </a>

@@ -15,7 +15,6 @@ class TransactionController extends Controller
 {
     public function index(Request $request)
     {
-        // ... (Index code remains exactly the same as your original file) ...
         $user = Auth::user();
         $userId = $user->id;
 
@@ -94,20 +93,17 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-
-        // 1. Validation with NEW field names
         $request->validate([
             'type'              => 'required|in:income,expense',
-            'transaction_amount'=> 'required|numeric|min:0', // renamed
+            'transaction_amount'=> 'required|numeric|min:0', 
             'transaction_date'  => 'required|date',
-            'transaction_name'  => 'required|string|max:255', // renamed
+            'transaction_name'  => 'required|string|max:255', 
             'account_id'        => 'required|exists:accounts,account_id',
             'category_id'       => 'nullable|exists:categories,category_id', 
         ]);
 
         $userId = Auth::id();
 
-        // 2. Budget Gating
         $budgetId = $request->budget_id;
         if ($request->type === 'expense') {
             if ($user->isPremium()) {
@@ -119,14 +115,13 @@ class TransactionController extends Controller
             $budgetId = null;
         }
 
-        // 3. Creation (Mapping new names to DB columns)
         if ($request->type === 'income') {
             Income::create([
                 'user_id' => $userId,
                 'account_id' => $request->account_id,
                 'category_id' => $request->category_id,
-                'name' => $request->transaction_name,     // Map input -> DB
-                'amount' => $request->transaction_amount, // Map input -> DB
+                'name' => $request->transaction_name,
+                'amount' => $request->transaction_amount, 
                 'transaction_date' => $request->transaction_date,
             ]);
         } else {
@@ -135,13 +130,12 @@ class TransactionController extends Controller
                 'account_id' => $request->account_id,
                 'category_id' => $request->category_id,
                 'budget_id' => $budgetId,
-                'name' => $request->transaction_name,     // Map input -> DB
-                'amount' => $request->transaction_amount, // Map input -> DB
+                'name' => $request->transaction_name,     
+                'amount' => $request->transaction_amount, 
                 'transaction_date' => $request->transaction_date,
             ]);
         }
 
-        // 4. CLEANUP: Clear transaction draft
         session()->forget('transaction_draft');
 
         return redirect()->back()->with('success', __('messages.transaction_added_success'));

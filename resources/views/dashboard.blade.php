@@ -2,7 +2,6 @@
 
 @section('content')
 
-{{-- Welcome & Flash Messages --}}
 <h2 class="mb-4 fw-bold fs-2">{{ __('dashboard.welcome', ['name' => Auth::user()->name]) }}</h2>
 
 @if(session('error'))
@@ -18,7 +17,6 @@
     </div>
 @endif
 
-{{-- 1. Summary Cards --}}
 <div class="row mb-5">
     <div class="col-md-6 col-lg-4 mb-3">
         <div class="card shadow-sm border-success h-100">
@@ -47,10 +45,7 @@
     </div>
 </div>
 
-{{-- 2. Transaction & Budget Forms --}}
 <div class="row mb-5">
-    
-    {{-- Budget Form --}}
     <div class="col-md-6 mb-4">
         @if (Auth::user()->isPremium())
             <div class="card shadow-lg">
@@ -88,12 +83,10 @@
         @endif
     </div>
 
-    {{-- Transaction Form --}}
     <div class="col-md-6 mb-4">
         <div class="card shadow-lg">
             <div class="card-header bg-success text-white fw-bold">{{ __('dashboard.add_transaction') }}</div>
             <div class="card-body">
-                {{-- Added ID="transactionForm" --}}
                 <form action="{{ route('transactions.store') }}" method="POST" class="row g-3" id="transactionForm">
                     @csrf
 
@@ -135,7 +128,6 @@
                         </div>
                     </div>
 
-                    {{-- Budget Select --}}
                     <div class="col-12" id="budgetSelect" style="display: none;">
                         @if (Auth::user()->isPremium())
                             <select name="budget_id" class="form-select">
@@ -144,15 +136,6 @@
                                     <option value="{{ $budget->budget_id }}" {{ old('budget_id') == $budget->budget_id ? 'selected' : '' }}>{{ $budget->name }}</option>
                                 @endforeach
                             </select>
-                            
-                            <div class="mt-2 text-end">
-                                <button type="submit" 
-                                        formaction="{{ route('session.draft_budget') }}" 
-                                        formnovalidate 
-                                        class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-plus me-1"></i> {{ __('dashboard.add_budget') ?? 'Add New Budget' }}
-                                </button>
-                            </div>
                         @else
                             <input type="hidden" name="budget_id" value=""> 
                             <div class="alert alert-info py-2 m-0" role="alert">
@@ -162,12 +145,10 @@
                     </div>
 
                     <div class="col-12">
-                        {{-- Renamed to transaction_name --}}
                         <input type="text" class="form-control" name="transaction_name" placeholder="{{ __('dashboard.transaction_name') }}" required value="{{ old('transaction_name') }}">
                     </div>
 
                     <div class="col-6">
-                        {{-- Renamed to transaction_amount --}}
                         <input type="number" class="form-control" name="transaction_amount" placeholder="{{ __('dashboard.amount') }}" required value="{{ old('transaction_amount') }}">
                     </div>
                     <div class="col-6">
@@ -281,7 +262,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const incomeCategories = @json($incomeCategories);
     const expenseCategories = @json($expenseCategories);
     
-    // Grab old values from Laravel session
     const oldType = "{{ old('type') }}";
     const oldCategory = "{{ old('category_id') }}";
     const oldBudget = "{{ old('budget_id') }}";
@@ -317,9 +297,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // --- NEW: AUTO-SAVE LOGIC ---
-    // Make sure you have a CSRF token in your layout (usually in a meta tag) or get it from a hidden input
-    // Here we try to grab it from one of the forms
     const csrfToken = document.querySelector('input[name="_token"]').value;
     
     function autoSave(formId, formType) {
@@ -339,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: JSON.stringify({ form: formType, data: data })
             });
-        }, 1000)); // 1 second delay
+        }, 1000)); 
     }
 
     function debounce(func, timeout = 1000){
@@ -349,8 +326,6 @@ document.addEventListener('DOMContentLoaded', function () {
             timer = setTimeout(() => { func.apply(this, args); }, timeout);
         };
     }
-
-    // Initialize auto-save for both forms
     autoSave('budgetForm', 'budget');
     autoSave('transactionForm', 'transaction');
 });

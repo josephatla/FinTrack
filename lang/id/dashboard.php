@@ -34,7 +34,6 @@ return [
     'no_transactions' => 'Tidak ada transaksi ditemukan.',
     'transaction_history' => 'Riwayat Transaksi',
     'category_name' => 'Nama Kategori',
-    
     'profile' => 'Profil',
     'profile_info' => 'Informasi Profil',
     'update_info_msg' => "Perbarui informasi profil dan alamat email akun Anda.",
@@ -52,18 +51,14 @@ return [
     'cancel' => 'Batal',
     'password' => 'Kata Sandi',
     'email' => 'Email',
-
     'wallets' => 'Dompet',
     'your_wallets' => 'Dompet Anda',
     'current_balance' => 'Saldo Saat Ini',
     'view_history' => 'Lihat Riwayat',
     'no_wallets_found' => 'Tidak ada dompet ditemukan. Tambahkan akun pertama Anda!',
-
-    // Kunci yang digunakan dalam struktur tampilan
     'income' => 'Pemasukan',
     'expense' => 'Pengeluaran',
     'type_col' => 'Tipe',
     'select_category' => 'Pilih Kategori',
-    // ADDED
     'add_category' => 'Tambah Kategori Baru',
 ];

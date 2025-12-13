@@ -30,10 +30,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // --- Session & Draft Routes ---
     Route::post('/session/draft', [SessionController::class, 'storeDraft'])->name('session.draft');
     Route::post('/session/draft/budget', [SessionController::class, 'storeBudgetDraft'])->name('session.draft_budget');
-    // NEW: Auto-save route
     Route::post('/session/autosave', [SessionController::class, 'autosave'])->name('session.autosave');
 
     Route::resource('accounts', AccountController::class);

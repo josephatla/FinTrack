@@ -8,7 +8,6 @@ return [
     'view_budget' => 'Lihat Anggaran',
     'summary' => 'Ringkasan Anggaran',
     'in_budget' => 'Dalam Batas Anggaran',
-
     'name' => 'Nama',
     'limit' => 'Batas Jumlah',
     'amount' => 'Jumlah',
@@ -24,7 +23,6 @@ return [
     'details' => 'Detail',
     'back' => 'Kembali',
     'delete' => 'Hapus Anggaran',
-    
     'delete_confirm' => 'Apakah Anda yakin ingin menghapus anggaran ini?',
     'created_success' => 'Anggaran berhasil dibuat!',
     'updated_success' => 'Anggaran berhasil diperbarui!',

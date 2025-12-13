@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UpgradeController extends Controller
 {
-    //
     public function instantUpgrade()
     {
         $user = Auth::user();

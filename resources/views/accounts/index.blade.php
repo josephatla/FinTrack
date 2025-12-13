@@ -7,7 +7,6 @@
 <div class="row row-cols-1 row-cols-md-3 g-4">
     @forelse ($accounts as $account)
         @php
-            // Assuming your Account Model has a getCalculatedBalanceAttribute() or similar method
             $balance = $account->calculated_balance ?? 0;
             $balanceClass = $balance >= 0 ? 'text-success' : 'text-danger';
         @endphp

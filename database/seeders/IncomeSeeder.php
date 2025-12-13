@@ -11,14 +11,8 @@ class IncomeSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('id_ID');
-
-        // Fetch all user IDs
         $users = DB::table('users')->pluck('id')->toArray();
-        
-        // Fetch all categories once, then group them by type for efficiency
         $allCategories = DB::table('categories')->get()->groupBy('type');
-        
-        // Get array of income category IDs, or empty array if none exist
         $incomeCategories = $allCategories->get('income', collect())->pluck('category_id')->toArray();
 
         foreach ($users as $userId) {

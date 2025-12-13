@@ -1,7 +1,6 @@
 <?php
 
 return [
-    // Dashboard & General
     'dashboard' => 'Dashboard',
     'history' => 'History',
     'welcome' => 'Welcome, :name',
@@ -34,11 +33,8 @@ return [
     'budget_if_expense' => 'Budget (if expense)',
     'no_transactions' => 'No transactions found.',
     'transaction_history' => 'Transaction History',
-    // ADDED: Localization key for the category creation button
     'add_category' => 'Add New Category',
     'category_name' => 'Category Details',
-
-    // Profile Page
     'profile' => 'Profile',
     'profile_info' => 'Profile Information',
     'update_info_msg' => "Update your account's profile information and email address.",
@@ -56,16 +52,13 @@ return [
     'cancel' => 'Cancel',
     'password' => 'Password',
     'email' => 'Email',
-
     'wallets' => 'Wallets',
     'your_wallets' => 'Your Wallets',
     'current_balance' => 'Current Balance',
     'view_history' => 'View History',
     'no_wallets_found' => 'No wallets found. Add your first account!',
-    
-    // Keys used in the view structure
-    'income' => 'Income', // Used for optgroup label in transactions filter
-    'expense' => 'Expense', // Used for optgroup label in transactions filter
-    'type_col' => 'Type', // Used in transactions filter
-    'select_category' => 'Select Category', // Used in transactions filter
+    'income' => 'Income', 
+    'expense' => 'Expense', 
+    'type_col' => 'Type', 
+    'select_category' => 'Select Category', 
 ];
