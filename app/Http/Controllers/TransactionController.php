@@ -10,6 +10,7 @@ use App\Models\Expense;
 use App\Models\Category;
 use App\Models\Account;
 use App\Models\User;
+use App\Models\Budget;
 
 class TransactionController extends Controller
 {
@@ -139,5 +140,96 @@ class TransactionController extends Controller
         session()->forget('transaction_draft');
 
         return redirect()->back()->with('success', __('messages.transaction_added_success'));
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $user = Auth::user();
+        $type = $request->query('type');
+
+        if ($type === 'income') {
+            $transaction = Income::where('user_id', $user->id)->findOrFail($id);
+        } elseif ($type === 'expense') {
+            $transaction = Expense::where('user_id', $user->id)->findOrFail($id);
+        } else {
+            abort(404);
+        }
+
+        $accounts = Account::where('user_id', $user->id)->get();
+        $categories = Category::where('user_id', $user->id)
+            ->orWhereNull('user_id')
+            ->get();
+        
+        $budgets = collect();
+        if ($user->isPremium()) {
+            $budgets = Budget::where('user_id', $user->id)->get();
+        }
+
+        return view('transactions.edit', compact('transaction', 'type', 'accounts', 'categories', 'budgets'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
+        $type = $request->input('type');
+
+        $request->validate([
+            'transaction_amount'=> 'required|numeric|min:0',
+            'transaction_date'  => 'required|date',
+            'transaction_name'  => 'required|string|max:255',
+            'account_id'        => 'required|exists:accounts,account_id',
+            'category_id'       => 'nullable|exists:categories,category_id',
+        ]);
+
+        if ($type === 'income') {
+            $transaction = Income::where('user_id', $user->id)->findOrFail($id);
+            $transaction->update([
+                'account_id'       => $request->account_id,
+                'category_id'      => $request->category_id,
+                'name'             => $request->transaction_name,
+                'amount'           => $request->transaction_amount,
+                'transaction_date' => $request->transaction_date,
+            ]);
+        } elseif ($type === 'expense') {
+            $transaction = Expense::where('user_id', $user->id)->findOrFail($id);
+            
+            $budgetId = $request->budget_id;
+            if ($user->isPremium()) {
+                 $request->validate(['budget_id' => 'nullable|exists:budgets,budget_id']);
+            } else {
+                $budgetId = null;
+            }
+
+            $transaction->update([
+                'account_id'       => $request->account_id,
+                'category_id'      => $request->category_id,
+                'budget_id'        => $budgetId,
+                'name'             => $request->transaction_name,
+                'amount'           => $request->transaction_amount,
+                'transaction_date' => $request->transaction_date,
+            ]);
+        } else {
+            abort(404);
+        }
+
+        return redirect()->route('transactions.index')->with('success', __('messages.transaction_updated_success') ?? 'Transaction updated successfully.');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = Auth::user();
+        $type = $request->query('type');
+
+        if ($type === 'income') {
+            $transaction = Income::where('user_id', $user->id)->findOrFail($id);
+        } elseif ($type === 'expense') {
+            $transaction = Expense::where('user_id', $user->id)->findOrFail($id);
+        } else {
+            abort(404);
+        }
+
+        $transaction->delete();
+
+        return redirect()->back()->with('success', __('messages.transaction_deleted_success') ?? 'Transaction deleted successfully.');
     }
 }

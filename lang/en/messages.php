@@ -9,4 +9,11 @@ return [
     'upgrade_now' => 'Upgrade Now',
     'transaction_added_success' => 'Transaction added successfully!',
     'upgrade_success' => 'Upgrade to Premium successfully',
+    'confirm_delete' => 'Are you sure you want to delete this transaction?',
+    'transaction_updated_success' => 'Transaction updated successfully.',
+    'transaction_deleted_success' => 'Transaction deleted successfully.',
+    'account_created_success' => 'Account created successfully!',
+    'account_updated_success' => 'Account updated successfully!',
+    'account_deleted_success' => 'Account deleted successfully!',
+    'confirm_delete_account' => 'Are you sure? All transactions in this wallet will be permanently deleted.',
 ];

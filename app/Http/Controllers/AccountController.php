@@ -13,30 +13,39 @@ class AccountController extends Controller
     public function index()
     {
         $userId = Auth::id();
+
         $accounts = Account::where('user_id', $userId)
-            ->with(['incomes', 'expenses'])
-            ->get();
+            ->withSum('incomes as total_income', 'amount')
+            ->withSum('expenses as total_expense', 'amount')
+            ->get()
+            ->map(function ($account) {
+                $account->calculated_balance = ($account->total_income ?? 0) - ($account->total_expense ?? 0);
+                return $account;
+            });
             
         return view('accounts.index', compact('accounts'));
     }
 
-    public function create()
-    {
-        return view('accounts.create');
-    }
-
     public function store(Request $request)
     {
+        $user = Auth::user();
+
+        $accountCount = Account::where('user_id', $user->id)->count();
+        if (!$user->isPremium() && $accountCount >= 5) {
+            return redirect()->back()->with('error', __('messages.account_limit_reached'));
+        }
+
         $request->validate([
             'name'   => 'required|string|max:255',
             'type'   => 'required|string|max:50', 
         ]);
 
         $data = $request->except('balance'); 
-        $data['user_id'] = Auth::id();
+        $data['user_id'] = $user->id;
 
         Account::create($data);
-        return redirect()->route('accounts.index')->with('success', __('dashboard.account_created_success'));
+
+        return redirect()->route('accounts.index')->with('success', __('messages.account_created_success'));
     }
 
     public function show(Account $account)
@@ -59,15 +68,6 @@ class AccountController extends Controller
         ]);
     }
 
-    public function edit(Account $account)
-    {
-        if ($account->user_id !== Auth::id()) {
-            abort(403);
-        }
-        
-        return view('accounts.edit', compact('account'));
-    }
-
     public function update(Request $request, Account $account)
     {
         if ($account->user_id !== Auth::id()) {
@@ -82,7 +82,7 @@ class AccountController extends Controller
         $data = $request->except('balance');
         $account->update($data);
 
-        return redirect()->route('accounts.index')->with('success', __('dashboard.account_updated_success'));
+        return redirect()->route('accounts.index')->with('success', __('messages.account_updated_success'));
     }
 
     public function destroy(Account $account)
@@ -93,6 +93,6 @@ class AccountController extends Controller
         
         $account->delete();
 
-        return redirect()->route('accounts.index')->with('success', __('dashboard.account_deleted_success'));
+        return redirect()->route('accounts.index')->with('success', __('messages.account_deleted_success'));
     }
 }

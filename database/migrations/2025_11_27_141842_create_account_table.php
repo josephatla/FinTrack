@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('account_id');
             $table->unsignedBigInteger('user_id');
             $table->string('name');
-            $table->enum('type', ['cash', 'bank', 'ewallet'])->default('cash');
+            $table->string('type')->default('Cash');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

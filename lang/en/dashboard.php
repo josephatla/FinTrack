@@ -61,4 +61,11 @@ return [
     'expense' => 'Expense', 
     'type_col' => 'Type', 
     'select_category' => 'Select Category', 
+    'actions' => 'Actions',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'add_account' => 'Add Account',
+    'edit_account' => 'Edit Wallet',
+    'limit_reached' => 'Free Limit Reached (5/5)',
+    'add_account_btn' => 'Create Wallet',
 ];

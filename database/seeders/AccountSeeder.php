@@ -14,11 +14,11 @@ class AccountSeeder extends Seeder
         $users = \DB::table('users')->pluck('id')->toArray();
 
         $defaultAccounts = [
-            ['name' => 'Cash', 'type' => 'cash'],
-            ['name' => 'BCA', 'type' => 'bank'],
-            ['name' => 'BRI', 'type' => 'bank'],
-            ['name' => 'OVO', 'type' => 'ewallet'],
-            ['name' => 'GoPay', 'type' => 'ewallet'],
+            ['name' => 'Cash', 'type' => 'Cash'],
+            ['name' => 'BCA', 'type' => 'Bank'],
+            ['name' => 'BRI', 'type' => 'Bank'],
+            ['name' => 'OVO', 'type' => 'E-Wallet'],
+            ['name' => 'GoPay', 'type' => 'E-Wallet'],
         ];
 
         foreach ($users as $userId) {

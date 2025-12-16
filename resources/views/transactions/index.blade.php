@@ -4,6 +4,13 @@
 
 <h2 class="mb-4 fw-bold fs-2">{{ __('dashboard.transaction_history') }}</h2>
 
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-light fw-bold">{{ __('transactions.filter_transactions') }}</div>
     <div class="card-body">
@@ -19,7 +26,6 @@
                 <label for="account" class="form-label text-muted small">{{ __('dashboard.wallets') }}</label>
                 <select name="account" id="account" class="form-select">
                     <option value="">{{ __('transactions.all_wallets') }}</option>
-                    {{-- Assumes $accounts is passed from the controller --}}
                     @foreach ($accounts as $account)
                         <option value="{{ $account->account_id }}" 
                                 {{ request('account') == $account->account_id ? 'selected' : '' }}>
@@ -42,7 +48,6 @@
                 <label for="category" class="form-label text-muted small">{{ __('dashboard.select_category') }}</label>
                 <select name="category" id="category" class="form-select">
                     <option value="">{{ __('transactions.all_categories') }}</option>
-                    
                     @php 
                         $groupedCategories = isset($categories) ? $categories->groupBy('type') : collect(); 
                     @endphp
@@ -97,7 +102,6 @@
             </div>
 
             <div class="col-12 d-flex gap-2 pt-2">
-                
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-filter me-1"></i> {{ __('transactions.apply_filter') }}
                 </button>
@@ -124,6 +128,7 @@
                 @if (Auth::user()->isPremium())
                     <th>{{ __('dashboard.budget_if_expense') }}</th>
                 @endif
+                <th class="text-center">{{ __('dashboard.actions') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -144,16 +149,37 @@
                     @if (Auth::user()->isPremium())
                         <td>
                             @if($t->type === 'expense')
-                                {{ $t->budget_name ? $t->budget_name . ' ' . __('budget.budget') : '-' }}
+                                {{ $t->budget_name ? $t->budget_name : '-' }}
                             @else
                                 -
                             @endif
                         </td>
                     @endif
+
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{{ route('transactions.edit', ['transaction' => $t->id, 'type' => $t->type]) }}" 
+                               class="btn btn-sm btn-outline-primary" 
+                               title="{{ __('dashboard.edit') }}">
+                                <i class="fas fa-edit me-1"></i> {{ __('dashboard.edit') }}
+                            </a>
+
+                            <form action="{{ route('transactions.destroy', ['transaction' => $t->id, 'type' => $t->type]) }}" 
+                                  method="POST" 
+                                  class="d-inline"
+                                  onsubmit="return confirm('{{ __('messages.confirm_delete') ?? 'Are you sure you want to delete this transaction?' }}')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ __('dashboard.delete') }}">
+                                    <i class="fas fa-trash me-1"></i> {{ __('dashboard.delete') }}
+                                </button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="{{ Auth::user()->isPremium() ? 5 : 4 }}" class="text-center py-3 text-muted">
+                    <td colspan="{{ Auth::user()->isPremium() ? 6 : 5 }}" class="text-center py-3 text-muted">
                         {{ __('transactions.no_transactions') }}
                     </td>
                 </tr>

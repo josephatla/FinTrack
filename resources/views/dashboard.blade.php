@@ -36,10 +36,10 @@
     </div>
     @php $netBalance = $totalIncome - $totalExpense; @endphp
     <div class="col-md-6 col-lg-4 mb-3">
-        <div class="card shadow-sm border-info h-100">
+        <div class="card shadow-sm border-primary h-100">
             <div class="card-body">
-                <h5 class="card-title text-info text-uppercase">Net Balance</h5>
-                <h3 class="card-text fw-bold text-{{ $netBalance >= 0 ? 'success' : 'danger' }}">Rp {{ number_format($netBalance) }}</h3>
+                <h5 class="card-title text-primary text-uppercase">Net Balance</h5>
+                <h3 class="card-text fw-bold">Rp {{ number_format($netBalance) }}</h3>
             </div>
         </div>
     </div>
@@ -51,15 +51,12 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white fw-bold">{{ __('dashboard.add_budget') }}</div>
                 <div class="card-body">
-                    {{-- Added ID="budgetForm" --}}
                     <form action="{{ route('budgets.store') }}" method="POST" class="row g-3" id="budgetForm">
                         @csrf
                         <div class="col-12">
-                            {{-- Renamed to budget_name --}}
                             <input type="text" class="form-control" name="budget_name" placeholder="{{ __('dashboard.budget_name') }}" required value="{{ old('budget_name') }}">
                         </div>
                         <div class="col-12">
-                            {{-- Renamed to budget_amount --}}
                             <input type="number" class="form-control" name="budget_amount" placeholder="{{ __('dashboard.amount') }}" required value="{{ old('budget_amount') }}">
                         </div>
                         <div class="col-12 text-end">

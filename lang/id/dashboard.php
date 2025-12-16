@@ -61,4 +61,11 @@ return [
     'type_col' => 'Tipe',
     'select_category' => 'Pilih Kategori',
     'add_category' => 'Tambah Kategori Baru',
+    'actions' => 'Aksi',
+    'edit' => 'Edit',
+    'delete' => 'Hapus',
+    'add_account' => 'Tambah Akun',
+    'edit_account' => 'Edit Dompet',
+    'limit_reached' => 'Batas Gratis Tercapai (5/5)',
+    'add_account_btn' => 'Buat Dompet',
 ];

@@ -9,4 +9,11 @@ return [
     'upgrade_now' => 'Tingkatkan Sekarang',
     'transaction_added_success' => 'Transaksi berhasil ditambahkan!',
     'upgrade_success' => 'Upgrade ke Premium berhasil',
+    'confirm_delete' => 'Apakah Anda yakin ingin menghapus transaksi ini?',
+    'transaction_updated_success' => 'Transaksi berhasil diperbarui.',
+    'transaction_deleted_success' => 'Transaksi berhasil dihapus.',
+    'account_created_success' => 'Akun berhasil dibuat!',
+    'account_updated_success' => 'Akun berhasil diperbarui!',
+    'account_deleted_success' => 'Akun berhasil dihapus!',
+    'confirm_delete_account' => 'Apakah Anda yakin? Semua transaksi di dompet ini akan dihapus secara permanen.',
 ];
