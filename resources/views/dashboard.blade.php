@@ -169,15 +169,25 @@
                 $usedAmount = $budget->expenses->sum('amount');
                 $limitAmount = $budget->amount;
                 $percentage = ($usedAmount / max(1, $limitAmount)) * 100;
-                $progressClass = $percentage > 100 ? 'bg-danger' : ($percentage > 75 ? 'bg-warning' : 'bg-success');
+                $isOverBudget = $usedAmount > $limitAmount;
+                $progressClass = $isOverBudget ? 'bg-danger' : ($percentage > 75 ? 'bg-warning' : 'bg-success');
+                $cardBorderClass = $isOverBudget ? 'border-danger' : '';
             @endphp
+            
             <div class="col-sm-6 col-lg-4 mb-3">
-                <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100 {{ $cardBorderClass }}">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title fw-bold text-primary">{{ $budget->name }}</h5>
-                        <p class="card-text small text-muted">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title fw-bold text-primary">{{ $budget->name }}</h5>
+                            @if($isOverBudget)
+                                <span class="badge bg-danger animate__animated animate__pulse animate__infinite">!</span>
+                            @endif
+                        </div>
+
+                        <p class="card-text small text-muted mb-2">
                             {{ __('dashboard.limit') }}: Rp {{ number_format($limitAmount) }}
                         </p>
+
                         <div class="progress mb-2" style="height: 15px;">
                             <div class="progress-bar {{ $progressClass }}" role="progressbar" 
                                  style="width: {{ min(100, $percentage) }}%" 
@@ -186,17 +196,84 @@
                                 {{ round($percentage) }}%
                             </div>
                         </div>
-                        <p class="card-text text-muted mt-auto">
+
+                        <p class="card-text text-muted">
                             {{ __('dashboard.used') }}: Rp {{ number_format($usedAmount) }}
                         </p>
-                        <a href="{{ route('budgets.show', $budget->budget_id) }}" class="btn btn-outline-primary btn-sm mt-2">
-                            {{ __('dashboard.details') }}
-                        </a>
+
+                        @if ($isOverBudget)
+                            <div class="alert alert-danger py-2 px-3 mt-1 mb-3 small border-0 bg-danger bg-opacity-10 text-danger">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    <strong>{{ __('dashboard.overbudget') }}</strong>
+                                </div>
+                                <div class="mt-1">
+                                    {{ __('dashboard.exceeded_by') }}: 
+                                    <strong>Rp {{ number_format($usedAmount - $limitAmount) }}</strong>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="{{ route('budgets.show', $budget->budget_id) }}" class="btn btn-outline-primary btn-sm flex-grow-1">
+                                {{ __('dashboard.details') }}
+                            </a>
+
+                            <button type="button" class="btn btn-outline-secondary btn-sm" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editBudgetModal{{ $budget->budget_id }}" 
+                                    title="{{ __('dashboard.edit') }}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <form action="{{ route('budgets.destroy', $budget->budget_id) }}" method="POST" onsubmit="return confirm('{{ __('budget.delete_confirm') ?? 'Are you sure you want to delete this budget?' }}')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm" title="{{ __('dashboard.delete') }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="editBudgetModal{{ $budget->budget_id }}" tabindex="-1" aria-labelledby="editBudgetModalLabel{{ $budget->budget_id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title fw-bold" id="editBudgetModalLabel{{ $budget->budget_id }}">
+                                {{ __('budget.edit_budget') ?? 'Edit Limit' }}
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{ route('budgets.update', $budget->budget_id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="budget_name_{{ $budget->budget_id }}" class="form-label small text-muted">{{ __('budget.name') }}</label>
+                                    <input type="text" class="form-control" id="budget_name_{{ $budget->budget_id }}" name="budget_name" value="{{ $budget->name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="budget_amount_{{ $budget->budget_id }}" class="form-label small text-muted">{{ __('budget.limit') }}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" class="form-control" id="budget_amount_{{ $budget->budget_id }}" name="budget_amount" value="{{ $budget->amount }}" min="0" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn btn-link text-muted text-decoration-none" data-bs-dismiss="modal">{{ __('budget.back') ?? 'Cancel' }}</button>
+                                <button type="submit" class="btn btn-primary">{{ __('budget.save_changes') ?? 'Save' }}</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         @endforeach
     @else
+        {{-- Empty State --}}
         <div class="col-12">
             <div class="alert alert-secondary text-center">
                 <p class="mb-1 fw-bold">{{ __('dashboard.no_budgets') }}</p>

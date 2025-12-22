@@ -20,7 +20,7 @@ class BudgetSeeder extends Seeder
             for ($i = 0; $i < 2; $i++) {
                 \DB::table('budgets')->insert([
                     'user_id' => $userId,
-                    'name' => ucfirst($faker->word) . ' Budget',
+                    'name' => ucfirst($faker->word) . ' Limit',
                     'amount' => $faker->numberBetween(1000000, 10000000),
                     'created_at' => now(),
                     'updated_at' => now()

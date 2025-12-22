@@ -7,8 +7,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UpgradeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\UpgradeController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -37,12 +38,14 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('accounts', AccountController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class);
-
+    
     Route::get('/pricing', function () {
         return view('pricing');
     })->name('pricing');
-    Route::post('/upgrade/instant', [UpgradeController::class, 'instantUpgrade'])
-         ->name('upgrade.instant');
+    Route::get('/payment/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
+    Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
+    Route::get('/upgrade', [UpgradeController::class, 'instantUpgrade'])
+         ->name('upgrade');
 
     Route::middleware(['premium'])->group(function () {
         Route::resource('budgets', BudgetController::class);

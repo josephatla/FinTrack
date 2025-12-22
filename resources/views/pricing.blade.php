@@ -58,12 +58,9 @@
                             {{ __('pricing.button_active') }}
                         </button>
                     @else
-                        <form action="{{ route('upgrade.instant') }}" method="POST" class="w-100 mt-auto">
-                            @csrf
-                            <button type="submit" class="w-100 btn btn-lg btn-primary">
-                                {{ __('pricing.button_upgrade') }}
-                            </button>
-                        </form>
+                        <a href="{{ route('payment.checkout') }}" class="w-100 btn btn-lg btn-primary mt-auto">
+                            {{ __('pricing.button_upgrade') }}
+                        </a>
                     @endif
                 </div>
             </div>

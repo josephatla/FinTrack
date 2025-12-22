@@ -53,12 +53,39 @@ class BudgetController extends Controller
         return view('budgets.show', compact('budget'));
     }
 
+    public function edit(Budget $budget)
+    {
+        if ($budget->user_id !== Auth::id()) {
+            abort(403);
+        }
+        return view('budgets.edit', compact('budget'));
+    }
+
+    public function update(Request $request, Budget $budget)
+    {
+        if ($budget->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'budget_name'   => 'required|string|max:255',
+            'budget_amount' => 'required|numeric|min:0',
+        ]);
+
+        $budget->update([
+            'name'   => $request->budget_name,
+            'amount' => $request->budget_amount,
+        ]);
+
+        return redirect()->route('dashboard')->with('success', __('budget.updated_success'));
+    }
+
     public function destroy(Budget $budget)
     {
         if ($budget->user_id !== Auth::id()) {
             abort(403);
         }
         $budget->delete();
-        return redirect()->route('budgets.index')->with('success', __('budget.deleted_success'));
+        return redirect()->route('dashboard')->with('success', __('budget.deleted_success'));
     }
 }
