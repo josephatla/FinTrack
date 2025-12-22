@@ -28,6 +28,8 @@ class PaymentController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $user->account_type = 'PREMIUM'; 
+        $user->premium_expires_at = now()->addYears(1); 
+        
         $user->save();
         return redirect()->route('dashboard')->with('success', __('Payment successful! You are now a Premium member.'));
     }
