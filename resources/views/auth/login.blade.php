@@ -1,47 +1,51 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <x-auth-session-status class="mb-3 alert alert-success" :status="session('status')" />
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="mb-3">
+            <label for="email" class="form-label">{{ __('Email') }}</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}" 
+                   class="form-control @error('email') is-invalid @enderror" 
+                   required autofocus autocomplete="username">
+            
+            @error('email')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <div class="mb-3">
+            <label for="password" class="form-label">{{ __('Password') }}</label>
+            <input id="password" type="password" name="password" 
+                   class="form-control @error('password') is-invalid @enderror" 
+                   required autocomplete="current-password">
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            @error('password')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <div class="flex items-center justify-between mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900"
-                href="{{ route('password.request') }}">
+                <a class="text-decoration-none text-muted small" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
 
-            <a href="{{ route('register') }}"
-            class="underline text-sm text-gray-600 hover:text-gray-900">
+            <a class="text-decoration-none text-muted small" href="{{ route('register') }}">
                 {{ __('Don’t have an account? Register') }}
             </a>
         </div>
 
-        <div class="mt-4">
-            <x-primary-button class="w-full flex justify-center ">
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">
                 {{ __('Log in') }}
-            </x-primary-button>
+            </button>
         </div>
     </form>
 </x-guest-layout>
